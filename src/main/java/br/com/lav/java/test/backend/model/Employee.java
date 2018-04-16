@@ -2,6 +2,7 @@ package br.com.lav.java.test.backend.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -33,7 +34,7 @@ public class Employee implements Serializable{
 	private List<Project> project;
 	
 	// employee's role
-	private Role role;
+	private String role;
 	
 	// employee's skill
 	private List<Skill> skill;
@@ -58,7 +59,7 @@ public class Employee implements Serializable{
 	 * @param skill
 	 * @param certification
 	 */
-	public Employee(String name, Role role, String salary, 
+	public Employee(String name, String role, String salary, 
 			String manager, String gcm, List<Project> project, List<Skill> skill, 
 						List<String > certification ) {
 		this.id = count.getAndIncrement();
@@ -164,7 +165,7 @@ public class Employee implements Serializable{
 	 * Get role list
 	 * @return List<Role>
 	 */
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 	
@@ -172,7 +173,7 @@ public class Employee implements Serializable{
 	 * Set role list
 	 * @param role
 	 */
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 	
@@ -213,26 +214,17 @@ public class Employee implements Serializable{
 		return "Employee [name=" + name + "]";
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(name, employee.name);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Employee other = (Employee) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
+    @Override
+    public int hashCode() {
 
+        return Objects.hash(name);
+    }
 }

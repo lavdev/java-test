@@ -21,7 +21,7 @@ public class Project implements Serializable {
 	private String dateBegin;
 	private String dateEnd;
 	
-	private Customer customer;
+	private String customer;
 
     /***
      * Project constructor
@@ -32,7 +32,7 @@ public class Project implements Serializable {
      * @param dateEnd
      */
 	public Project(String name, 
-			Customer customer, String valueOfProject, String dateBegin, String dateEnd) {
+			String customer, String valueOfProject, String dateBegin, String dateEnd) {
 		this.id = count.getAndIncrement();
 		this.name = name;
 		this.customer = customer;
@@ -69,7 +69,7 @@ public class Project implements Serializable {
      * Get Customer
      * @return customer
      */
-	public Customer getCustomer() {
+	public String getCustomer() {
 		return customer;
 	}
 
@@ -77,7 +77,7 @@ public class Project implements Serializable {
      * Set Customer
      * @param customer
      */
-	public void setCustomer(Customer customer) {
+	public void setCustomer(String customer) {
 		this.customer = customer;
 	}
 
@@ -134,13 +134,13 @@ public class Project implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return id == project.id;
+        return Objects.equals(name, project.name);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+        return Objects.hash(name);
     }
 
     @Override

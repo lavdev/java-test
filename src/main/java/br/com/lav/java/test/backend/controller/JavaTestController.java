@@ -1,8 +1,7 @@
 package br.com.lav.java.test.backend.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,9 @@ import br.com.lav.java.test.backend.service.StaticData;
 @EnableAutoConfiguration
 public class JavaTestController {
 
+	@Autowired
+	StaticData staticData;
+	
     /***
      * Default endpoint
      * @return String
@@ -42,7 +44,7 @@ public class JavaTestController {
     @RequestMapping(value = "/skill", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Skill>> skillList() {
-        return new ResponseEntity<>(StaticData.getInstance().getSkillList(), HttpStatus.OK);
+        return new ResponseEntity<>(staticData.getSkillList(), HttpStatus.OK);
     }
 
     /***
@@ -52,7 +54,7 @@ public class JavaTestController {
     @RequestMapping(value = "/employee", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Employee>> employeeList() {
-        return new ResponseEntity<>(StaticData.getInstance().getEmployeeList(), HttpStatus.OK);
+        return new ResponseEntity<>(staticData.getEmployeeList(), HttpStatus.OK);
     }
 
     /***
@@ -62,6 +64,6 @@ public class JavaTestController {
     @RequestMapping(value = "/employee/skill", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Employee>> employeeListBySkill(@RequestParam("filter") String filter) {
-        return new ResponseEntity<>(StaticData.getInstance().getEmployeeBySkill(filter), HttpStatus.OK);
+        return new ResponseEntity<>(staticData.getEmployeeBySkill(filter), HttpStatus.OK);
     }
 }

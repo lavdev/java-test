@@ -2,7 +2,6 @@ package br.com.lav.java.test.backend.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import br.com.lav.java.test.backend.model.Customer;
 import br.com.lav.java.test.backend.model.Employee;
 import br.com.lav.java.test.backend.model.Project;
-import br.com.lav.java.test.backend.model.Role;
 import br.com.lav.java.test.backend.model.Skill;
+import br.com.lav.java.test.util.Util;
 
 /***
  * Singleton StaticData class, is an in-memory mock DAO that mimics
@@ -39,22 +40,8 @@ public class StaticData {
 	// customer collection data
 	public static final ArrayList<Customer> customers = new ArrayList<>();
 	
-    // StaticData instance... 
-	private static StaticData instance;
-
-    /***
-     * Get StaticData instance class
-     * @return instance
-     */
-	public static StaticData getInstance() {
-		if(instance == null) {
-			instance = new StaticData();
-		}
-		return instance;
-	}
-	
-	// the access must be by get instance method.
-	protected StaticData() {}
+	// the access must be by get instance method.	
+	public StaticData() {}
 
 	/***
 	 * Populate static data based on available JSON file, it will be trigger
@@ -64,136 +51,168 @@ public class StaticData {
 	 */
 	@Autowired
 	public void populate() {
-		
-		// populate customer list
-		LOGGER.info("Creating Customer...");
-		customers.add(new Customer("NET"));
-		customers.add(new Customer("Multiplus Fidelidade"));
-		
-		// populate project list
-		LOGGER.info("Creating Project...");
-		projects.add(new Project("Portal cadastro NET",
-			                       findCustomerByName("NET"),
-			                       "1.000.000,00",
-			                       "2016-11-05T08:15:30-05:00",
-			                       "2017-11-05T08:15:30-05:00"));
-		projects.add(new Project("Fulfillment",
-								findCustomerByName("Multiplus Fidelidade"),
-				                "1.000.000,00",
-				                "2015-11-05T08:15:30-05:00",
-				                "2018-11-05T08:15:30-05:00"));
+		String c = "[\n" +
+                "   {\n" +
+                "      \"name\":\"Renato Garcia\",\n" +
+                "      \"role\":\"TI Architect\",\n" +
+                "      \"salary\":\"2000,00\",\n" +
+                "      \"manager\":\"Marcelo Ricciardi\",\n" +
+                "      \"gcm\":\"05\",\n" +
+                "      \"projects\":[\n" +
+                "         {\n" +
+                "            \"name\":\"Portal cadastro NET\",\n" +
+                "            \"customer\":\"NET\",\n" +
+                "            \"valueOfProject\":\"1.000.000,00\",\n" +
+                "            \"dtBegin\":\"2016-11-05T08:15:30-05:00\",\n" +
+                "            \"dtEnd\":\"2017-11-05T08:15:30-05:00\"\n" +
+                "         }\n" +
+                "      ],\n" +
+                "      \"skills\":[\n" +
+                "         \"java\",\n" +
+                "         \"javaee\",\n" +
+                "         \"rest\",\n" +
+                "         \"graphql\",\n" +
+                "         \"microservice\",\n" +
+                "         \"soa\",\n" +
+                "         \"oracle soa suite\"\n" +
+                "      ],\n" +
+                "      \"certification\":[\n" +
+                "         \"Oracle SOA Suite 11g Essentials - Jun 2015\",\n" +
+                "         \"Oracle Certified Professional, Java SE 7 Programmer - Aug 2014\",\n" +
+                "         \"ITIL® Foundation Certificate Jun 2013\",\n" +
+                "         \"Sun Certified Enterprise Architect for the Java Platform Oct 2010\",\n" +
+                "         \"Sun Certified Associate for Java Platform - Oct 2008\",\n" +
+                "         \"Sun Certified Business Component Developer for the Java Platform, EE 5 - Nov 2007\",\n" +
+                "         \"Sun Certified Business Component Developer for the Java Platform, EE 1.3 - Feb 2007\",\n" +
+                "         \"Sun Certified Web Component Developer for the Java Platform - Oct 2006\",\n" +
+                "         \"Sun Certified Programmer for the Java Platform - Jun 2006\"\n" +
+                "      ]\n" +
+                "   },\n" +
+                "   {\n" +
+                "      \"name\":\"Jose Carlos\",\n" +
+                "      \"role\":\"Software Enginner\",\n" +
+                "      \"salary\":\"1700,00\",\n" +
+                "      \"manager\":\"Marcelo Ricciardi\",\n" +
+                "      \"gcm\":\"04\",\n" +
+                "      \"projects\":[\n" +
+                "         {\n" +
+                "            \"name\":\"Fulfillment\",\n" +
+                "            \"customer\":\"Multiplus Fidelidade\",\n" +
+                "            \"valueOfProject\":\"1.000.000,00\",\n" +
+                "            \"dtBegin\":\"2015-11-05T08:15:30-05:00\",\n" +
+                "            \"dtEnd\":\"2018-11-05T08:15:30-05:00\"\n" +
+                "         }\n" +
+                "      ],\n" +
+                "      \"skills\":[\n" +
+                "         \"java\",\n" +
+                "         \"javaee\",\n" +
+                "         \"DevOps\"\n" +
+                "      ],\n" +
+                "      \"certification\":[\n" +
+                "         \"Sun Certified Programmer for the Java Platform\"\n" +
+                "      ]\n" +
+                "   },\n" +
+                "   {\n" +
+                "      \"name\":\"Gabriel Luz\",\n" +
+                "      \"role\":\"Software Enginner\",\n" +
+                "      \"salary\":\"9000,00\",\n" +
+                "      \"manager\":\"Marcelo Ricciardi\",\n" +
+                "      \"gcm\":\"04\",\n" +
+                "      \"projects\":[\n" +
+                "         {\n" +
+                "            \"name\":\"Fulfillment\",\n" +
+                "            \"customer\":\"Multiplus Fidelidade\",\n" +
+                "            \"valueOfProject\":\"1.000.000,00\",\n" +
+                "            \"dtBegin\":\"2015-11-05T08:15:30-05:00\",\n" +
+                "            \"dtEnd\":\"2018-11-05T08:15:30-05:00\"\n" +
+                "         }\n" +
+                "      ],\n" +
+                "      \"skills\":[\n" +
+                "         \"java\",\n" +
+                "         \"javaee\"\n" +
+                "      ],\n" +
+                "      \"certification\":[\n" +
+                "         \"Sun Certified Programmer for the Java Platform\"\n" +
+                "      ]\n" +
+                "   },\n" +
+                "   {\n" +
+                "      \"name\":\"Marcelo Ricciari\",\n" +
+                "      \"role\":\"Manager\",\n" +
+                "      \"salary\":\"14000,00\",\n" +
+                "      \"manager\":\"Douglas\",\n" +
+                "      \"gcm\":\"06\",\n" +
+                "      \"projects\":[\n" +
+                "\n" +
+                "      ],\n" +
+                "      \"skills\":[\n" +
+                "         \"gestao de pessoas\",\n" +
+                "         \"PMI\",\n" +
+                "         \"Scrum\",\n" +
+                "         \"Agile\",\n" +
+                "         \"DevOps\"\n" +
+                "      ],\n" +
+                "      \"certification\":[\n" +
+                "         \"Sun Certified Programmer for the Java Platform\"\n" +
+                "      ]\n" +
+                "   }\n" +
+                "]";
 
-		// populate skills list
-		LOGGER.info("Creating Skill...");
-		skills.add(new Skill("java"));
-		skills.add(new Skill("javaee"));
-		skills.add(new Skill("graphql"));
-		skills.add(new Skill("microservice"));
-		skills.add(new Skill("soa"));
-		skills.add(new Skill("oracle soa suite"));
-		skills.add(new Skill("DevOps"));
-		skills.add(new Skill("gestao de pessoas"));
-		skills.add(new Skill("PMI"));
-		skills.add(new Skill("Scrum"));
-		skills.add(new Skill("Agile"));	
-		skills.add(new Skill("just test"));
+		JsonNode jsonNode = Util.getInstance().createJsonObjectFromString(c);
+		// collect individual employee's certification
+        ArrayList<String> cert;
+        // collect individual employee's skill
+        ArrayList<Skill> skillArrayList;
+        // collect individual employee's project
+        ArrayList<Project> projectArrayList;
+		if(jsonNode != null) {
+            for (JsonNode node : jsonNode) {
+                // added employee's project
+                projectArrayList = new ArrayList<>();
+                if (node.has("projects")) {
+                    JsonNode p = node.get("projects");
+                    for (JsonNode d : p) {
+                        Project project = new Project(d.get("name").asText(), d.get("customer").asText(),
+                                d.get("valueOfProject").asText(), d.get("dtBegin").asText(), d.get("dtEnd").asText());
+                        // just added to global project collection ( to filter feature )
+                        if(!projects.contains(project)) {
+                            projects.add(project);
+                        }
+                        projectArrayList.add(project);
+                    }
+                }
+                // added employee's skill
+                skillArrayList = new ArrayList<>();
+                if (node.has("skills")) {
+                    for (JsonNode s : node.get("skills")) {
+                        Skill x = new Skill(s.textValue());
+                        // just added to global skill collection (to filter feature)
+                        if(!skills.contains(x)){
+                            skills.add(x);
+                        }
+                        skillArrayList.add(x);
+                    }
+                }
 
-		// populate employee list
-		LOGGER.info("Creating Employee...");
-		
-		// Employee - Start
-		List<Project> projectList = new ArrayList<>();
-		projectList.add(findProjectByName("Portal cadastro NET"));
-		
-		List<Skill> skillset= new ArrayList<>();
-		skillset.add(findSkillByName("java"));
-		skillset.add(new Skill("javaee"));
-		skillset.add(new Skill("graphql"));
-		skillset.add(new Skill("microservice"));
-		skillset.add(new Skill("soa"));
+                // added employee's certification
+                cert = new ArrayList<>();
+                if (node.has("certification")) {
+                    JsonNode p = node.get("certification");
+                    for (JsonNode d : p) {
+                        cert.add(d.asText());
+                    }
+                }
 
-		List<String> certset = new ArrayList<>();
-		certset.add("Oracle SOA Suite 11g Essentials - Jun 2015");
-		certset.add("Oracle Certified Professional, Java SE 7 Programmer - Aug 2014");
-		certset.add("ITILÂ® Foundation Certificate Jun 2013");
-		certset.add("Sun Certified Enterprise Architect for the Java Platform Oct 2010");
-		certset.add("Sun Certified Associate for Java Platform - Oct 2008");
-		certset.add("Sun Certified Business Component Developer for the Java Platform, EE 5 - Nov 2007");
-		certset.add("Sun Certified Business Component Developer for the Java Platform, EE 1.3 - Feb 2007");
-		certset.add("Sun Certified Web Component Developer for the Java Platform - Oct 2006");
-		certset.add("Sun Certified Programmer for the Java Platform - Jun 2006");
-		
-		employees.add(new Employee("Renato Garcia", 
-				new Role("TI Architect"), 
-				"2000,00", 
-				"Marcelo Ricciardi", 
-				"05",
-				projectList, skillset, certset));
-		
-		// Employee - End
-		
-		// Employee - Start
-		projectList = new ArrayList<>();
-		projectList.add(findProjectByName("Fulfillment"));
-		
-		skillset= new ArrayList<>();
-		skillset.add(findSkillByName("java"));
-		skillset.add(new Skill("javaee"));
-		skillset.add(new Skill("DevOps"));
-	
-		certset = new ArrayList<>();
-			certset.add("Sun Certified Programmer for the Java Platform");
-			
-			employees.add(new Employee("Jose Carlos", 
-					new Role("Software Enginner"), 
-					"1700,00", 
-					"Marcelo Ricciardi", 
-					"04",
-					projectList, skillset, certset));
-			
-	    // Employee - End	
-			
-			
-		// Employee - Start
-		projectList = new ArrayList<>();
-		projectList.add(findProjectByName("Fulfillment"));
-		
-		skillset= new ArrayList<>();
-		skillset.add(findSkillByName("java"));
-		skillset.add(new Skill("javaee"));
-		
-	
-		certset = new ArrayList<>();
-			certset.add( "Sun Certified Programmer for the Java Platform");
-			
-			employees.add(new Employee("Gabriel Luz", 
-					new Role("Software Enginner"), 
-					"9000,00", 
-					"Marcelo Ricciardi", 
-					"04",
-					projectList, skillset, certset));
-				
-		// Employee - End
-
-		// Employee - Start
-		skillset= new ArrayList<>();
-		skillset.add(new Skill("gestao de pessoas"));
-		skillset.add(new Skill("PMI"));
-		skillset.add(new Skill("Scrum"));
-		skillset.add(new Skill("Agile"));
-		skillset.add(new Skill("DevOps"));
-	
-		certset = new ArrayList<>();
-			certset.add( "Sun Certified Programmer for the Java Platform");
-			
-			employees.add(new Employee("Marcelo Ricciari", 
-					new Role("Manager"), 
-					"14000,00", 
-					"Douglas", 
-					"06",
-					null, skillset, certset));
-		// Employee - End				
-			
+                // added employee
+                employees.add(new Employee(node.get("name").asText(),
+                        node.get("role").asText(),
+                        node.get("salary").asText(),
+                        node.get("manager").asText(),
+                        node.get("gcm").asText(),
+                        projectArrayList,
+                        skillArrayList,
+                        cert));
+            }
+        }
 	}
 	
 	/***

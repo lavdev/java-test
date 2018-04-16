@@ -1,6 +1,7 @@
 package br.com.lav.java.test.backend.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /***
@@ -50,30 +51,22 @@ public class Skill implements Serializable  {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Skill other = (Skill) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
 
-	@Override
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Skill skill = (Skill) o;
+        return Objects.equals(name, skill.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name);
+    }
+
+    @Override
 	public String toString() {
 		return "Skill [name=" + name + "]";
 	}
