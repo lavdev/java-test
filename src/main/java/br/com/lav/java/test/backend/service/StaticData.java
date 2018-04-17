@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import br.com.lav.java.test.backend.model.Customer;
 import br.com.lav.java.test.backend.model.Employee;
 import br.com.lav.java.test.backend.model.Project;
 import br.com.lav.java.test.backend.model.Skill;
@@ -37,8 +36,6 @@ public class StaticData {
 	public static final ArrayList<Employee> employees = new ArrayList<>();
 	// project collection data
 	public static final ArrayList<Project> projects = new ArrayList<>();
-	// customer collection data
-	public static final ArrayList<Customer> customers = new ArrayList<>();
 	
 	// the access must be by get instance method.	
 	public StaticData() {}
@@ -68,6 +65,9 @@ public class StaticData {
                         Project project = new Project(d.get("name").asText(), d.get("customer").asText(),
                                 d.get("valueOfProject").asText(), d.get("dtBegin").asText(), d.get("dtEnd").asText());
                         // just added to global project collection ( to filter feature )
+                        if(projects.isEmpty()) {
+                        	LOGGER.info("Creting project database ... ");
+                        }
                         if(!projects.contains(project)) {
                             projects.add(project);
                         }
@@ -80,6 +80,9 @@ public class StaticData {
                     for (JsonNode s : node.get("skills")) {
                         Skill x = new Skill(s.textValue());
                         // just added to global skill collection (to filter feature)
+                        if(skills.isEmpty()) {
+                        	LOGGER.info("Creting skill database ... ");
+                        }
                         if(!skills.contains(x)){
                             skills.add(x);
                         }
@@ -97,6 +100,10 @@ public class StaticData {
                 }
 
                 // added employee
+                if(employees.isEmpty()){
+                	LOGGER.info("Creting employee database ... ");
+                }
+                
                 employees.add(new Employee(node.get("name").asText(),
                         node.get("role").asText(),
                         node.get("salary").asText(),
@@ -144,24 +151,6 @@ public class StaticData {
 	}
 
 	/***
-	 * Find customer by name
-	 * @param name
-	 * @return Customer or null
-	 */
-	public Customer findCustomerByName(String name){
-		List<Customer> filtered =
-			    customers
-			        .stream()
-			        .filter(c -> c.getName().equals(name))
-			        .collect(Collectors.toList());
-		
-		if(filtered.size() > 0) {
-			return filtered.get(0);
-		}			
-		return null;
-	}
-
-	/***
 	 * Get the Employee list
 	 * @return List<Employee>
 	 */
@@ -181,18 +170,6 @@ public class StaticData {
         List<Skill> list = new ArrayList<>();
         for (Skill skill : skills) {
             list.add(skill);
-        }
-        return list;
-	}
-	
-	/***
-	 * Get the Customer list
-	 * @return List<Customer>
-	 */
-	public List<Customer> getCustomerlList(){
-        List<Customer> list = new ArrayList<>();
-        for (Customer customer : customers) {
-            list.add(customer);
         }
         return list;
 	}
