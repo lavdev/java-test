@@ -3,10 +3,13 @@ package br.com.lav.java.test.util;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,28 +52,12 @@ public class Util {
 		return mapper;
 	}
 	
+
     /***
-     * Get json data from file
-     * @param file
-     * @return JsonNode
-     */
-    public JsonNode readJsonArrayFile(String file) {    	
-    	ClassPathResource res = new ClassPathResource(file);    
-    	File f = new File(res.getPath());
-    	if(f.exists()) {
-    		try {
-    			return jsonMapper().readTree(f);
-    		}catch(IOException ex) {
-    			LOGGER.warn("Error reading file {} {} ", file, ex.getLocalizedMessage());    		    
-			}
-    	}
-    	return null;
-    }	
-	
-    /***
-     * Get json data from file
+     * Get json data from string 
      * @param s
-     * @return JsonNode
+     * @r
+     * eturn JsonNode
      */
     public JsonNode createJsonObjectFromString(String s) {
 		try {
@@ -80,5 +67,22 @@ public class Util {
 			LOGGER.warn("Error ",ex.getLocalizedMessage());
 		}
     	return null;
-    }	
+    }
+
+    /***
+     * Get json data from file
+     * @param s
+     * @return JsonNode
+     */
+	public JsonNode createJsonObjectFromFile(String s) {
+		
+		try {
+			File file = ResourceUtils.getFile("classpath:" + s );
+			String content = new String(Files.readAllBytes(file.toPath()));
+			return jsonMapper().readTree(content);
+		}catch(IOException ex) {
+			LOGGER.warn("Error reading file {} ", s, ex.getLocalizedMessage());    		    
+		}
+    	return null;
+    }
 }
