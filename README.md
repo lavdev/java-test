@@ -1,5 +1,5 @@
 # java-test-backend
-Back-end spring boot application
+Just playing Java, developed a BackEnd Spring boot application
 
 mvn clean install
 
